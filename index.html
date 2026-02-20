@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bounty Hunter Gift Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f0f4f8;}
+        .container { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input { margin: 10px; padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        #result { margin-top: 25px; text-align: left; line-height: 1.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎁 Thoughtful Gift Generator</h2>
+        <p>Enter details below to instantly generate 5 custom gift ideas.</p>
+        
+        <input type="text" id="age" placeholder="Person's Age (e.g., 25)"><br>
+        <input type="text" id="hobbies" placeholder="Hobbies (e.g., Cooking, Gaming)"><br>
+        <input type="text" id="budget" placeholder="Your Budget (e.g., $50)"><br>
+        <button onclick="generateGifts()">Get Gift Ideas</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function generateGifts() {
+            const age = document.getElementById('age').value;
+            const hobbies = document.getElementById('hobbies').value;
+            const budget = document.getElementById('budget').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!age || !hobbies || !budget) {
+                resultDiv.innerHTML = "<p style='color:red;'><b>Error: Please fill in all 3 fields for the judge test.</b></p>";
+                return;
+            }
+
+            resultDiv.innerHTML = "<p><i>Generating thoughtful ideas...</i></p>";
+
+            try {
+                // This talks to your Python file
+                const response = await fetch(`/api/index?age=${age}&hobbies=${hobbies}&budget=${budget}`);
+                const data = await response.json();
+                
+                let html = "<h3>Your 5 Suggested Gifts:</h3><ol>";
+                data.gifts.forEach(gift => {
+                    html += `<li>${gift}</li>`;
+                });
+                html += "</ol>";
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = "<p style='color:red;'><b>System Error: Please refresh the page and try again.</b></p>";
+            }
+        }
+    </script>
+</body>
+</html>
